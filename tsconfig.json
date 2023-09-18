@@ -14,8 +14,7 @@
     "exclude": [
       "node_modules" // This is default option, so no need anyway...
     ],
-    "files": [
-      "ts/Main.ts", // Plus possible comma-separated list of other files to compile...
-      "ts/entities/Crisis.ts"
-    ]
-  }
+    "include": [
+      "ts/*"
+  ],
+}
