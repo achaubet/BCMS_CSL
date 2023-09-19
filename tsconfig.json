@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
       "declaration": true, // See also '"typings": "js/Palindrome.d.ts",' in 'package.json'...
-      // "emitDeclarationOnly": true,
       "module": "CommonJS", // Chosen module syntax (e.g., 'import', 'export'...) in JavaScript...
       "moduleResolution": "node", // How to resolve module dependencies (default is "node", "classic" is legacy)
       "outDir": "js",
@@ -9,12 +8,11 @@
       "target": "ESNext", // Targeted JavaScript version, e.g., 'let x = y ** z;' -> JavaScript 7...
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "skipLibCheck": true,
     },
     "exclude": [
       "node_modules" // This is default option, so no need anyway...
     ],
     "include": [
-      "ts/*"
+      "ts/**/*"
   ],
 }
