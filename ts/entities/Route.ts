@@ -3,7 +3,7 @@ import fireTruckInCrisis from "./fireTruckInCrisis";
 import policeVehicleInCrisis from "./policeVehicleInCrisis";
 
 
-@Entity()
+@Entity("Route")
 export default class Route {
     @PrimaryColumn()
     route_name: string;

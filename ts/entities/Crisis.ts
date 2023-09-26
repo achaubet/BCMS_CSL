@@ -3,7 +3,7 @@ import fireTruckInCrisis from "./fireTruckInCrisis";
 import policeVehicleInCrisis from "./policeVehicleInCrisis";
 
 
-@Entity()
+@Entity("Crisis")
 export default class Crisis {
     @PrimaryColumn()
     crisis_id: number;
