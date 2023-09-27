@@ -1,3 +1,5 @@
+import express from "express";
+import bodyParser from "body-parser";
 import { DataSource } from "typeorm"
 import Crisis from "./entities/Crisis";
 import fireTruck from "./entities/fireTruck";
@@ -6,7 +8,8 @@ import policeVehicle from "./entities/policeVehicle";
 import policeVehicleInCrisis from "./entities/policeVehicleInCrisis";
 import Route from "./entities/Route";
 import bcmsDAOFactory from "./dao/bcmsDAOFactory";
-
+import { FSC } from "./routes/FSC";
+import { PSC } from "./routes/PSC";
 
 const AppDataSource = new DataSource({
     type: "sqlite",
@@ -20,6 +23,19 @@ const AppDataSource = new DataSource({
         policeVehicleInCrisis,
         Route
     ]
+});
+
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+const port = 3000;
+
+// curl -X GET http://localhost:3000/FSC
+// curl -d '{"key1":"value1", "key2":"value2"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC
+app.use('/FSC', FSC);
+app.use('/PSC', PSC);
+app.listen(port, () => {
+    console.log(`Barbados Crisis Management System server is listening on port ${port}`)
 });
 
 async function testDAO() {
@@ -68,6 +84,7 @@ async function testDAO() {
         await fireTruckDAO.delete(getCamion);
         await policeVehicleDAO.delete(getVoiture);
         await crisisDAO.delete(getCrise);
+        await routeDAO.delete(route);
     });
 }
 
@@ -120,5 +137,5 @@ async function testEntities() {
     })
 }
 
-testDAO();
+// testDAO();
 //testEntities();

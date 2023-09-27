@@ -8,6 +8,9 @@
       "target": "ESNext", // Targeted JavaScript version, e.g., 'let x = y ** z;' -> JavaScript 7...
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
+      "esModuleInterop": true,
+      /* Completeness */
+      "skipLibCheck": true   
     },
     "exclude": [
       "node_modules" // This is default option, so no need anyway...
