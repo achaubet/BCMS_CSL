@@ -1,5 +1,6 @@
 // Fire Station Coordinator
 import express from "express";
+import { instanceBCMS } from "../bcmsStateMachine";
 
 export const FSC = express.Router();
 
@@ -10,15 +11,20 @@ FSC.get('/', (res, req) => {
 })
 
 FSC.post('/', (req, res) => {
-    console.log(req.body);
-    let jsonData = JSON.parse(req.body);
-    switch(jsonData) {
-        case "ajouter_camion":
-            console.log("Nom du camion: " + req.body.nom_camion);
+    switch(req.body.type) {
+        case "connection":
+            console.log("Fireman connected!");
+            instanceBCMS.send("FSC_connection_request");
+            res.send().status(200);
+            break;
+        case "number_trucks":
+            console.log("Number of firetruck is: " + req.body.number);
+            instanceBCMS.send("state_fire_truck_number", { number_of_fire_truck_required: req.body.number });
+            res.send().status(200);
+            break;
         default:
-            res.status(404);
+            res.status(400).json({
+                error: "Bad JSON request"
+            });
     }
-    res.status(201).json({
-        message: "Bien reçu!"
-    });
 });
