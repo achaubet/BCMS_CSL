@@ -1,4 +1,4 @@
-import { createMachine, assign } from "xstate";
+import { createMachine, assign, interpret } from "xstate";
 
 interface Context {
   FSC_credentials: String;
@@ -9,7 +9,7 @@ interface Context {
 }
 
 const bcmsStateMachine = createMachine<Context>({
-  /** @xstate-layout N4IgpgJg5mDOIC5QCEDCBZAygOgJYDtcAXAYgDFNUB9AYwHt98wajcGqAnMARwFc4iAbQAMAXUSgADnVjE2+CSAAeiAIwA2AMzYAnHp0B2Q+oAc6gwFZhAJgA0IAJ6IDAFlXZNqnaqMXTF62EXAF9g+zQsPEJSAAVKWgYmFnlOHn5YITFFaVlWBkUVBA1tfUNjM0sbeycEIx1sEy9VTSCDA00LDtDwjBwKanpGZiJIEjiBxOGUrj4BEXEkEBy5fMXCi0sG1WsXCwsXExMAzU1q5zcPJt9-QJCwkAiccYShllH+l6S8-FTZjPnsjIVgo1ogNgZsH4dtZLAZ1DoTNZVGdanott4Wi42h0uvdHthUBxcLJYFQIGAiABDXAAG1JYCUNAAFpT8DASBlKSMqAAzXBcKhEDi8GgAayo+F4AFsAEZgDgAxbLb4FNR+FweHTCLRWZpmIIo2HYdTWbzQzw6FyW7oPXoEokkskU6l0qgM5ms9mc7nSGm4GhgKgANzATP9NMDktl8sVUiBKtBRXVmu1HWEevUBsciHU6nc5gsls0B3UnU8NvxADlpXKOFQ6DzefzA0KReLyXymBAOVSfXQ-QHg6Hw5GazGskr4-JVUmTBrLId055VCZhGYUTpNOpsKo-JagnpC9a8Xbq9G6w2qL7-YGQ2GaBGnZ3Rt7A3yBa2xRKxwqJ3HctOiZeO02DtC48LCDo6hYi4G7bMaUIwiYbQuC4wiaBWdoAEp0LwPo0qyTohjSdCSFKYD4KQHC4dyPJ0HW74tsKYqwLGSxTqsoCFKhuhaKujQmFuJo2LB2ZFAc9QGMIBjbJoWorsYmGRDheGBpIBE-OSxGkeRlEkNRqm8vRV79jeQ73hGrF-uxAGccoiCaAY1gIXmOiFmYu7CBYKLNHJ2DCNJRxOZoJibpuSk4Cp+GEVpYAkWRFGkPgdBUFK9GBgZ3IRjymQLP+wIzhY8EIr4ezgYWW4+T49RIl40kIrupoYSeyk0W+xmMYKzGiqSfJKO88SUlAXBwFQlIyjRTYft1nBtWxyqAVxiBzvO6HWMWK4BcWJg+Vi9QWIizR5q4phQRF2BRe1DHNl1ba9bg-Xdh8Q0jaS42TZ1n7iplYCCKoeU2QViZwiY2C7J4mZahsB3ImJGhYv5iKBNJJpIrm52XUZ13TXdTaPeQ8QQMSL1gKN714VNTFtrNqnzRxIJLbUBig+DGiQV5C6wzUu6HJCh1rnm1jwnOGNtVjJkDrew4PqNfUDdQJNkxNFPXoOd4jjTIx07ZDP2QggmSSuRxBDYpZOT5ckWA0UFaqWdWGBYouGXRdaq1LFmyw98tjcNpNvcrRAS2Z6sy5rv3-YCOszitoFrRtq7oQcPmdMIiOBMha4dNY1gmE7tHGW75kjvd+MfETsCK-7k2FyHj4-drQOM40zlSZo61yauWrrnDSL7UjHRaFtyF51dlO3SxY2SJI1Eht2ADu1KBzX0uWQ3CaM1uqemnmq7FoElhc2ohzbtJtWmIuIV3D0rXOwXplqyvZNTzPowAOqL2PX1FzLVkAwtdmFFUGhCE6ZvCoWaHCQwO04a7CtjnNu8IpKLlMCPcWn1uqklivFXSgciApTlFeaiORRiVjAHPMOaCbpfV-pHRuesjrblzOYXcckbBAJ8quDUAUAobCCNnNhqCXZBwfh7TBYBtIJUooKfBakiEyBIWQihQjl6iLXotPWC5jRMM3DJNwKEqrWCticYxfgTR7HMOdTAIxJBUBcFQAAIsSSQXJmQECgCQdB1Ny7OKIMySAaiAGIHWl5XQ7lkIuBOEhC2uZ-KOS1OtCoucWo4CsWAGxdjHGwB8a4tkJAKK4SgEyT+GCyROJcUyfx1l-660AYcDUbkYTFixEcTwydNiqCASWU0pp9jqEsdY2xDiym+LDLklRGtvHlMqX-emM51oyR3B06SBxOhuV2D5QxEJhb7B4czZo-S0mDMydk0Z7j8m8EKcI92xdSlZKmRAAJNSj67H8qsnwQt6qoV2h0bASEhZljMBY5J2AACCNIaTFNxpMkZoxxmh2hX4h5VTZmJk8NqFyewpIROxd8jU0EgjQWQt0vw50wUQs8RPBFFTuznMuXCyytyTnTNoeveh0F3AHS3DCAI8yDC7Skr8o4ZVCzZyhqS8FVzv4MqpaMCl7ZhmIseTOTwflUJ7D0K4DY3g+Vw0ghCA62diwdCkutcVEL6WjRlTS5KFyilyswQq6lSrExoX8twgKehEQhU6KJGoPF3XpiAWuVCXkDk2IsFQEFHAiRBkpDSDxVCZoyi4JSUUEA6Bz3wM6xmqgtrGhWcBLlzQ7Bwzbv5ZGoqTjYq0GGqgEao0xrjSQC1VBk1gFTemzN2a9YlTBqaPZOwipmhRI0SEyN0xoRcIY0KOha31ujbgWN8a5WtpImKZlk4o6JkEqDf5bcwIBUaSiO2fNAgdObqFR2wLUnhsjQupdzb77XNDjKNdooN35VZYAyC24TUNWEro6BNQjQNXaIYqG3q513sbfGmgDpiRUAQ2lAUsBxHyl+sirdOac7bitGuFcO8kSnDEsmbOdVDXZ0ElBhti6m1weJAhhDllSSoZDFwbtgDfLGh0IEKCclc1CRRI5CEiIsSip2FBJE1H71xuwGQRNuNKQyZpHJhTE8lMxrcQmnGX4NOLo-YDL9Dl0KhM8LsYoIU9BCaFmO9M60tRYiKtJmD2AYhPqlWTZTrn3O1085psZPnH5jXvQZ6pyqThg0clabYnd0LoRRCWWzLCp3+AQedVAdApTqQpCkS8dAZQACspghlgCQB88iONqgRLoVMuwILepRFYbQQltRDpkkO0I9xkrkngIsR4LL1GFAALSORRENiJYNShbjcj4bU6NgUEGIANwJCAp2GgOL8joc4ETt0Eqoc6HxBhfEgMtp5q21w7gk6uPYXhPA6uAxcRo2q3I3G1OdZ4R3hgnc3XQ7iF3Si5kLHmPMh99YBUuDx9Mer4R5nS-BsRVJaT0kZCyNkYBTszl8lbA4ESTQHGZoY493gIe3eLDNvpwKzy1nrI2FdHYCDfc-YNo+QRfmlkLHCIqbRvJiWZqnIVuYjimlCkcc6VP5Q08lb5p8DOIAY6AoJCErCtBTsOBiUHph6k2D2HOIIomKfX0imLdSMU0PYMSvLxmPETid3+WhNu5UfJrmctvduQQ3CK8ER1NTPU8aM8M8zhATWGimGKGVIwIVk4tFPemaCWgVxe9doF0Rfu5c-aM0HzMHhKjbUEltUHQDTSno6eBWBQDE+QvU8-Ogs9Lf0MCC79CGYQoyQ0D5aC+qkYBThGR+bhuLpi2Ucnm5lJq+1-T4Ho6GoDZTpaB0LE921Qrn8laB2wDd4GAr-aoicUdKJWka22RpF5Fp6ZytjpXhTPAT8IcQIxHuYHXqM73NHkhYIivraG++ck+Sw82IiROCB+BC08x+qGp+Ae5+0kEI60TQ6EcknO6gVU0ergt+gkFUWctaGSjqbidegCPKm2AscBMIOwvqagTSYMrga4hwwE0kV6-eZKlevuVquBQShiVsnQu4lQpsc4u0WoO4k6nBjQC4dBn+OADBFqDqdyMK4BYWiY2c4EO4O2bgJwuYQQPO3MuaEIKBxsEM+6zmtGNILBRQBeRUtmAsKWbQhwIh+IN6da0GBhqmOmvuemS6RhhYKI9m5aAUzcJoEeew+hS6jhVM6mXm8mThb096OBE+kBi+CA+6Xhu4PGQCPGpq16Ay86LmYRwRzhXmDB2+Lh-ushjM8IGoFUBOoqVB1mICZ6IqyRhqARsmbmv+vmERMGbhOgQmaINgS44EyEFQ1gDRKmTRwcj8rRDhwxIiI+kRbIRhmhCWyECRPqQsLSQsgx3mzRoxwWLm4hw+P8Wx+mMhKKjMbQ9QzC4Sbgua8C8x1R6YSxqWqxwKGWWWEY3wku+WRWyQJWsxxq2eq+twBw2wiBJGJmgKrWwEu4Xg50AAovgBAJLvRiSLMVJKnGBFaIcGTiaEBmCDYMaGzGifMm5FRp1kAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QCEDCBZAygOgJYDtcAXAYgDFNUB9AYwHt98wajcGqAnMARwFc4iAbQAMAXUSgADnVjE2+CSAAeiAIwA2AMzYAnHp0B2Q+oAc6gwFZhAJgA0IAJ6ITwnbvUAWU6p2aLVrwBfQPs0LDxCUgAFSloGJhZ5Th5+WCExRWlZVgZFFQRVDxNsAw8LD2tNUwNVa2sdO0dnE1VsFsr1HQ9VC06LE2DQjBwKanpGZiJIEhix+Mmkrj4BEXEkECy5XPX8g00DNobVVU0Tf2ETg3snBAbhbF6bE4trc16dQZAwnFm4iZZpqM-gkcvhkss0qtMjItgodohLMUajYWsIyt1rFcmggzNYSh5uqVNJd-AZPt9sKgOLhZLAqBAwEQAIa4AA2dLAShoAAsmfgYCQ0kyplQAGa4LhUIgcXg0ADWVHwvAAtgAjMAcKHrTagvJqfytNHWEw6EwE6xWSrXRCk7DdTTCSzqdQ9AwmAYhL7DSnU2n0xks9lUTk8vkCoUi6Ss3A0MBUABuYG5MdZcaVao1WqkMN18IKFk0HjtLm6zt8zosqmtCHU5WwaLMtYJFksNXJ3oAcir1RwqHRRWKJXHpbKFQzxUwIILmZG6NHYwmkym093MxltTn5Hr82aSv0XCdji4zNXy9gep0PGi9BY9B52+Euxne-2qFGY3HE8maKn-RPphGcbipKI7yoqq6auu2bZFueY+KoxQeFUDSVp0xz7NWqhouo56aH4vi3lh1jCOoD44JgUySFQmhUKgdB0BwEAEMK8jYBRYCSHSeFMqo1GaEy1hUB2YBQHQrAsQw2AAEp0LwIqigxg4gTK8p0gyiasnQkjKmA+BENJsnyYpwHDipcp0kQdBUOqb4cFpMjTHZclAcZQ5SmZsBZhsm7bKA+QALS3sUxJdLWmg6J4ASYS0BwmNYWEXKYVQWmRbGUdRtH0YxzGgmlHFcfxvHcYJwmieJuUyc5Yqucpo5qWAGlaTpekGVVCm9iZ7l1YOSiArETGwEyUBcHAVBMqqhlKaZo6cIZYBeTqsF+Yg-mGG4PReGaFYmAYNTRZoeLEsIFxmi2lRkp6FLsVRNF0QxTH4BJ+B5ZxfE8W9JUiWJuBPa1RkdW5oHmf6jXabp+mVf9U1dapPV9dQQ0jXS42TZ1QOzc5C0+XCy0IIFFQlKoRjCP0Hh6MemFdPcB2uBFJh+F4F1DOE10ZXd2WPbl10Fe9xVCV95WsZDLkA7VsPqWAmlgy1wvVaL02w+KvVTkCiNgKNKNydD6NOVMgiqGs0Gwtu-mvAcrxbbWtP7B41bEfs2C1m6NQGK8OiOqRl3eqzt1ZQ9v3c29RX8Z9ZU-RVc1y2+c4fou36pvVoPNRDkftdH86fkuP6jZZ1lxpIdlZI5qeKe+C5fsunlQd5MG+coK39AcEW+C0DS4mamH1PcSEu8I4Vxb0qU+5l905axgfccHAn82Hv2y2nZeZ-Ho0S1Lyd-SL6exxX2d0kr8P0jSasaxNWuL3Hy4Y3r1eLXXAV6NoDqYj0rw+C6Jid+7dr7ETfemhantmbkXSr7UenNx6UR5lPUO3054l17OfHeCcQaSyauDDeUdEFZ2QfvFWsRj7I1PkQLe5dsFxl1vNG+2MTaFm0K7AwjoXg02EGcTCBJWiXBIgwvuNtNBDxASPDmAdIFBw+jPWBEc2qlxjqQ5eidUHSxTlIhBMil6VzhnghGw11aEMmlg5eV95oG2hLXHG9c8bP2wK8Fs5N6YnGsASTCB1tCYj0H3FoJxjz8I4lQDwVAAAiNJJDCh5AQKAJA0ZmUPrAYJRAeSQCxqY7clQSa6CCjtJCB03ROOdPWfY7tKhmDdN4qifjAkxJCcmfkJBdKySgNybWHlomxPiRARJxs4LuiLDoF4ewCRugLFWbEroLDnkKEUdQ9R6jlEAV6Fm6UylBMqWEkg+jL4DRadyBJVCkl5nOhw44joigFh6WUTuLZHamnKMdFsLQ+Fe3mT4xZFS4lVPCbU3g9SSFqN3s0yp2zDY1w6bjBCZR6wnKJq8R0XRbbDKQqMzEcUwqnGdEzOZOAACCrJWSNO6hs-5U41nZz+a8gFJjgXmKOjhWstYWxolobCm4hRCyOyvF4IorsUKzIpFinFkS8VLNJVOD5XyiXIPxUK9puYQWeFaP0ZKlg6j7CxEyjwDCrFnH8GUBoXcLCpV5d8i+vyJWtIiYDKJJqtltJ2RS-IxJwp2jKLeQwZQjBE0wq4A4-QlXwoYZUfV2LDVIJXoK01IqGn8vFqGq1UqlrmP8l4UZ6hjoOlxA4roGFsT1GwMSMohRm7GlKF0EpVALBUAxRwak8YmSsjNWLBUqouBMjlBAOgAB3fAsa76IAOniOKLhFXcI9tWUoVii37ALGTUwrwS1lorVWmtqzVFGt-I2sAzbW0dq7WYgKewc2u37vTXaWFazVisOCw5DjazER1dy726U52VtwNW2tkaG2aXlGSjcuzcb02KNYrJhZjqYk0NWWscq4oXAQrUE0eqHnAJ8Y+hdtaxVxlVB+uUX6jbSvMVhCKJQbCmg0MRGoRQR0XKI3sC07sCxnFneWp9L6SA0F9DSKgbHlQMTjLABqGpKGAtvjutQxocJkxYQhd+8VQPYl6EWOoPgbCVDqPTej87n2LpYzSNjbGE50h44mLg27twaAQo6-+h53S9Ewrtc8ZRxMFgdBUPuqnGM1uwGQc13UmSudZO5zzsNvNVpWeG3FAXGNYaBThgKqIc32oMM6B0+wWjVntVYqw7ofARSMEUFzyHsBRGXcG5GPn8uFbIcVoL1SQuoYq8+hJxjv22pWjUNwFRyhqotBUXaFgz27kLL0UozZk3+vg5SOgypJCplBH2AcdBVQACsFiJlgMxzSPGjNwUsEWCoO14u7X2AdRliAkJ4lQj03afdJmdHuUAl6paGN5YKxnFdGsStPe3uVsajHgv4DqQ0mrX2q0RcEybA9jtjoeKA54VhMns16D2JYPujoag3fRXdpD6nfMefrbVl9fmceA+fT9v7oXgaBbq20hr2G412rVeeFhJFk0tlOIWI7CB6gcP8H4M4g3jT3k+L9hk8B1jfHJVFlaR5RlPxqC8F0EUELVkCsUBC5QikFhIi8VKBBiBi5pxLvCdoQNdF8G6Y50mbiQcuWTHQtQsKWALKlIE4wQSQF192hAWq0kQ+NFUHa1YTT3ANFhE4WgwqqFSr8Z3kxXeNfFx7uslYLTxbOGq8KOh-cHRKH4exF27yo4pFSLT9VmRsg5FyXk-IwBu6EwUK81NiMWnpuaIZFv4sapImcP9eEyipSfD2GbpO-wEBj9T93CE0RWNpcYSs3WR0uDaP4Z0Zx6gmjo6NvvGoB+oaH5Oavxmel0MZw47oRzdpgcrA8SDR4YNdA9Ld4e7N-Y4ZB3mfy6EDjS5fnL9+p5azf1dq4MmvQlUCWqAkIlzCIpPGIqVBInGi-rjG-iwm4J-rLm-ArsMiTHiCbj4C0AWE2KAYIk-hAvlKInzDAYLJJPPDVArMDKvGgnpHvq-kRAcBtKYF4LWLtphKim0PFCTBOvUH4AQY-mPJJBPIVNAQLOHELPAqTvImvOglQfLDDMDLnDZAXPZDxhAIwQgQwjhKcIYPFvFIqo0EyvbjmrwRrsSG6PsEIX7CIc9GIbzCHOIhQc9IobISgvITLDIW+nvLgMrNofGsmvcEUneJ0Ltq4NFLuLbuZhygSPnvej4mAUQaIZAeIWQZIXAsoh4XQYohgmnL4WNJIOoYmFobHnrnjOYPcD4P0Oliwv2j1lmpdnaI6CnloJWI6LYWAsIiQVARkbPJIlDADrkcnIEQFFhN0DmjYDLq-PLh-MMoUN3D-EUsdH3EhF0eAcQa9H0c4eQVIZQTIcMbxl4UokMWVnIlKFZGoYXA5GUaPjXv5DUHiMNhoO6EYXUCqsJpiLoD-IquyoUGildAIsIeAqkb0ekbsZkYMZvEcUnAoYceceorgmMQ3HoO4C3D4CJnzk4uej3L-P3AAhsSkQ4WkU4dPHsVkWcc9kVp4fQacTCYib8kyMUXZKUSiXjEYDhC0E3jYN-ugaqj0sWMmuYPQpOvzvfgsgEtGmEuyS-HiCkmYDwpiMfk4gSHaKUPUa3AwpYAGnyv5rQdGiPpFhUXUP4A8MSC2FYLyR3HCl-Isd0LckTLUbqUGp9pakafAeYnUF4OeP-PaFUMmmcgsY6PiJZn3BoFkrlpjuyW-rUNoASJMgwkhHhvyWoBPmqiehiSruKWjqzBjnjtjjQbjjWjGRMW4EYC6rKrKoUJTK0IYFhAOonj0OUFGQWfqcWVju2YTvGDKeUe7ogRcCUPDv8dWY0TcK4uqXbscKaEUC4Heo8lRPmW5oWcoR2dgAaoUeTmyX2Q8cSKysaC0C6FUadClvFLoG6AzgdqsWYK2W5u9rIuoluSWTuSbHbqMgmZiPSimfMTcEUPcPbK7IMvTOFLWLeb5veT8sgk+eBYyVBd9vyKWdMY6omV+a4KmR7uYARr7qrqcMRHBhKYhg9pjqVtSZ9tBeuYGgDluR6dQkwXugaFYC2OwUYCYYgFbLFplh1nhgSKlHRBNlNkkK+HNotokMtrKTbI7P4K8PFOBmaJ8QgGTAitRg6CHhFPOTgAAKL4AQAD6aa0iylvHnj7Z+CuDuimDVjJmT6XjEgRmEj87BBAA */
   id: "BCMS",
   initial: "init",
   predictableActionArguments: true,
@@ -22,7 +22,10 @@ const bcmsStateMachine = createMachine<Context>({
   schema: {
     events: {} as
     | { type: "FSC_connection_request" }
-    | { type: "PSC_connection_request" },
+    | { type: "PSC_connection_request" }
+    | { type: "Crisis_details_exchange"}
+    | { type: "Number_of_fire_truck_defined"}
+    | { type: "Number_of_police_vehicle_defined"}
     // Terminer cette partie ...
   },
   states: {
@@ -32,16 +35,19 @@ const bcmsStateMachine = createMachine<Context>({
         PSC_connection_request: "PSC_connected",
       },
     },
+
     FSC_connected: {
       on: {
         PSC_connection_request: "Crisis_details_exchange",
-      },
+      }
     },
+
     PSC_connected: {
       on: {
-        FSC_connection_request: "Crisis_details_exchange",
-      },
+        FSC_connection_request: "Crisis_details_exchange"
+      }
     },
+
     Crisis_details_exchange: {
       on: {
         state_fire_truck_number: {
@@ -60,77 +66,131 @@ const bcmsStateMachine = createMachine<Context>({
         },
       },
     },
+
     Number_of_fire_truck_defined: {
       on: {
-        state_police_vehicle_number: "Route_plan_development",
+        state_police_vehicle_number: "Step_3_Coordination",
       },
     },
+
     Number_of_police_vehicle_defined: {
       on: {
-        state_fire_truck_number: "Route_plan_development",
+        state_fire_truck_number: "Step_3_Coordination",
       },
     },
-    Route_plan_development: {
-      on: {
-        route_for_fire_trucks: "Route_for_fire_trucks_fixed",
-        route_for_police_vehicles:"Route_for_police_vehicles_fixed",
-        no_more_route_left: "Step_4_Dispatching",
-      },
-    },
-    Route_for_fire_trucks_fixed: {
-      on: {
-        FSC_agrees_about_fire_truck_route: [
-          {
-            cond: "isRouteForPoliceVehiclesApproved",
-            target: "Step_4_Dispatching",
+
+    Step_3_Coordination: {
+      states: {
+        Route_for_police_vehicles_development: {
+          states: {
+            Route_for_police_vehicles_to_be_proposed: {
+              on: {
+                route_for_police_vehicles: "Route_for_police_vehicles_fixed"
+              }
+            },
+
+            Route_for_police_vehicles_fixed: {
+              on: {
+                FSC_agrees_about_police_vehicle_route: "Route_for_police_vehicles_approved",
+                FSC_disagrees_about_police_vehicle_route: "Route_for_police_vehicles_to_be_proposed"
+              }
+            },
+
+            Route_for_police_vehicles_approved: {}
           },
-          {
-            target: "Route_for_fire_trucks_approved",
-          },
-        ],
-        FSC_disagrees_about_fire_truck_route:
-          "Route_for_fire_trucks_development_to_be_proposed",
-      },
-    },
-    Route_for_police_vehicles_fixed: {
-      on: {
-        FSC_agrees_about_police_vehicle_route: [
-          {
-            target: "Step_4_Dispatching",
-            cond: "isRouteForFireTrucksApproved",
-          },
-          {
-            target: "Route_for_police_vehicles_approved",
-          },
-        ],
-        FSC_disagrees_about_police_vehicle_route:
-          "Route_for_police_vehicles_development_to_be_proposed",
-      }
-    },
-    Route_for_fire_trucks_approved: {
-      on : {
-        wait_police_vehicles : "Route_for_police_vehicles_fixed"
-      }
-    },
-    Route_for_police_vehicles_approved: {
-      on: {
-        Wait_fire_truck_vehicles: {
-          target: "Route_for_fire_trucks_fixed"
-        }
-      }
-    },
-    Route_for_fire_trucks_development_to_be_proposed: {
-      on: {
-        New_route_for_fire_trucks : "Route_for_fire_trucks_fixed",
-      },
-    },
-    Route_for_police_vehicles_development_to_be_proposed: {
-      on: {
-        New_route_for_police_vehicles: {
-          target: "Route_for_police_vehicles_fixed",
+
+          initial: "Route_for_police_vehicles_to_be_proposed"
         },
+
+        Route_for_fire_trucks_development: {
+          states: {
+            Route_for_fire_trucks_to_be_proposed: {
+              on: {
+                route_for_fire_trucks: "Route_for_fire_trucks_fixed"
+              }
+            },
+
+            Route_for_fire_trucks_fixed: {
+              on: {
+                FSC_disagrees_about_fire_truck_route: "Route_for_fire_trucks_to_be_proposed",
+                FSC_agrees_about_fire_truck_route: "Route_for_fire_trucks_approved"
+              }
+            },
+
+            Route_for_fire_trucks_approved: {}
+          },
+
+          initial: "Route_for_fire_trucks_to_be_proposed"
+        },
+
+        Steps_33a1_33a2_Negotiation: {
+          states: {
+            Route_for_fire_trucks_development: {
+              states: {
+                Route_for_fire_trucks_to_be_proposed: {
+                  on: {
+                    route_for_fire_trucks: "Route_for_fire_trucks_fixed"
+                  }
+                },
+
+                Route_for_fire_trucks_fixed: {
+                  on: {
+                    FSC_disagrees_about_fire_truck_route: "Route_for_fire_trucks_to_be_proposed",
+                    FSC_agrees_about_fire_truck_route: [{
+                      target: "Route_for_fire_trucks_approved",
+                      cond: "BCMS.not_in_Route_for_police_vehicles_approved"
+                    }, {
+                      target: "#BCMS.Step_4_Dispatching",
+                      cond: "BCMS.in_Route_for_police_vehicles_approved"
+                    }]
+                  }
+                },
+
+                Route_for_fire_trucks_approved: {
+                  type: "final"
+                }
+              },
+
+              initial: "Route_for_fire_trucks_to_be_proposed"
+            },
+
+            Route_for_police_vehicles_development: {
+              states: {
+                Route_for_police_vehicles_to_be_proposed: {
+                  on: {
+                    route_for_police_vehicles: "Route_for_police_vehicles_fixed"
+                  }
+                },
+
+                Route_for_police_vehicles_fixed: {
+                  on: {
+                    FSC_disagrees_about_police_vehicle_route: "Route_for_police_vehicles_to_be_proposed",
+                    FSC_agrees_about_police_vehicle_route: [{
+                      target: "Route_for_police_vehicles_approved",
+                      cond: "BCMS.not_in_Route_for_fire_trucks_approved"
+                    }, {
+                      target: "#BCMS.Step_4_Dispatching",
+                      cond: "BCMS.in_Route_for_fire_trucks_approved"
+                    }]
+                  }
+                },
+
+                Route_for_police_vehicles_approved: {
+                  type: "final"
+                }
+              },
+
+              initial: "Route_for_police_vehicles_to_be_proposed"
+            }
+          },
+
+          type: "parallel"
+        }
       },
+
+      type: "parallel"
     },
+
     Step_4_Dispatching: {
       on: {
         fire_truck_dispatched: {
@@ -149,6 +209,7 @@ const bcmsStateMachine = createMachine<Context>({
         },
       },
     },
+
     All_fire_trucks_dispatched: {
      on: {
         police_vehicle_dispatched: {
@@ -159,6 +220,7 @@ const bcmsStateMachine = createMachine<Context>({
         },
       },
     },
+
     All_police_vehicles_dispatched: {
       on: {
         fire_truck_dispatched: {
@@ -169,6 +231,7 @@ const bcmsStateMachine = createMachine<Context>({
         },
       },
     },
+
     Step_5_Arrival: {
       type: 'parallel',
       states: {
@@ -177,33 +240,42 @@ const bcmsStateMachine = createMachine<Context>({
           states: {
             Fire_trucks_arriving: {
               on: {
-                fire_truck_arrived: [
-                  {
-                    cond: 'areEnoughFireTrucksArrived',
-                    target: 'All_fire_trucks_arrived',
-                  },
-                ],
+                enough_fire_trucks_arrived: [{
+                  cond: "BCMS.no_more_dispatched_fire_trucks_and_not_in_All_police_vehicles_arrived",
+                  target: 'All_fire_trucks_arrived',
+                }, {
+                  target: "#BCMS.Completion_of_objectives",
+                  cond: "BCMS.no_more_dispatched_fire_trucks_and_in_All_police_vehicles_arrived"
+                }],
               },
             },
-            All_fire_trucks_arrived: {},
+
+            All_fire_trucks_arrived: {
+              type: "final"
+            }
           },
         },
+
         Police_vehicles_arrival: {
           initial: 'Police_vehicles_arriving',
+
           states: {
             Police_vehicles_arriving: {
               on: {
-                police_vehicle_arrived: [
-                  {
-                    cond: 'areEnoughPoliceVehiclesArrived',
-                    target: 'All_police_vehicles_arrived',
-                  },
-                ],
+                enough_police_vehicles_arrived: [{
+                  target: "#BCMS.Completion_of_objectives",
+                  cond: "BCMS.no_more_dispatched_police_vehicles_and_in_All_fire_trucks_arrived"
+                }, {
+                  cond: "BCMS.no_more_dispatched_police_vehicles_and_not_in_All_fire_trucks_arrived",
+                  target: 'All_police_vehicles_arrived',
+                }]
               },
             },
-            All_police_vehicles_arrived: {},
-          },
-        },
+            All_police_vehicles_arrived: {
+              type: "final"
+            },
+          }
+        }
       },
       on: {
         fire_truck_breakdown: {
@@ -223,16 +295,20 @@ const bcmsStateMachine = createMachine<Context>({
         ],
       },
     },
+
     Completion_of_objectives: {
       on: {
         close: 'End_of_crisis',
       },
     },
+
     End_of_crisis: {
       type: 'final',
-    },
+    }
   },
 });
 
-
-export default bcmsStateMachine;
+export const instanceBCMS = interpret(bcmsStateMachine).onTransition((state) => {
+  console.log(state.value)
+});
+instanceBCMS.start();
