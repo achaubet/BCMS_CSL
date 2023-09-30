@@ -6,25 +6,24 @@ export const PSC = express.Router();
 
 
 PSC.get('/', (res, req) => {
-    console.log("Policeman connected");
-    req.send().status(200);
-})
+    req.send("Policeman Router Base Path\nAdd /help to this path see all the paths available\n").status(200);
+});
 
-PSC.post('/', (req, res) => {
-    switch(req.body.type) {
-        case "connection":
-            console.log("Policeman connected!");
-            instanceBCMS.send("PSC_connection_request");
-            res.send().status(200);
-            break;
-        case "number_vehicles":
-            console.log("Number of vehicle is: " + req.body.number);
-            instanceBCMS.send("state_police_vehicle_number", { number_of_police_vehicle_required: req.body.number });
-            res.send().status(200);
-            break;
-        default:
-            res.status(400).json({
-                error: "Bad JSON request"
-            });
-    }
+PSC.get('/help', (res, req) => {
+    req.send("Available paths:\n" +
+    "/connexion : Connect a Policeman to the crisis\n" +
+    "/set_vehicle_number: Set the number of vehicle for the crisis\n"
+    ).status(200);
+});
+
+PSC.post('/connexion', (req, res) => {
+    console.log("Policeman connected!");
+    instanceBCMS.send("PSC_connection_request");
+    res.send().status(200);
+});
+
+PSC.post('/set_vehicle_number', (req, res) => {
+    console.log("Number of vehicle is: " + req.body.number);
+    instanceBCMS.send("state_police_vehicle_number", { number_of_police_vehicle_required: req.body.number });
+    res.send().status(200);
 });
