@@ -11,9 +11,22 @@ FSC.get('/', (res, req) => {
 
 FSC.get('/help', (res, req) => {
     req.send("Available paths:\n" +
-    "/connexion : Connect a Fireman to the crisis\n" +
-    "/set_firetruck_number: Set the number of firetruck for the crisis\n"
+    "Using GET method:\n" +
+    "/status: Shows the current Crisis Status in JSON format\n" +
+    "/get_route_police_vehicle: Return the route proposed by the Police\n" +
+    "Using POST method:\n" +
+    "/connexion: Connect a Fireman to the crisis\n" +
+    "/set_firetruck_number: Set the number of firetruck for the crisis\n" +
+    "/set_route_firetruck: Set the Route for the firetrucks\n"
     ).status(200);
+});
+
+FSC.get('/status', (res, req) => {
+    req.send(instanceBCMS.getSnapshot()).status(200);
+});
+
+FSC.get('/get_route_police_vehicle', (res, req) => {
+    req.send(instanceBCMS.getSnapshot().context.route_police_vehicle_proposal).status(200);
 });
 
 FSC.post('/connexion', (req, res) => {
@@ -24,6 +37,43 @@ FSC.post('/connexion', (req, res) => {
 
 FSC.post('/set_firetruck_number', (req, res) => {
     console.log("Number of firetruck is: " + req.body.number);
-    instanceBCMS.send("state_fire_truck_number", { number_of_fire_truck_required: req.body.number });
+    instanceBCMS.send("state_fire_truck_number", { name_of_route_for_fire_trucks: req.body.number });
     res.send().status(200);
+});
+
+FSC.post('/set_route_firetruck', (req, res) => {
+    instanceBCMS.send('route_for_fire_trucks', { route_fire_truck_proposal: req.body.route });
+    res.send().status(200);
+});
+
+FSC.post('/response_route_fire_truck', (req, res) => {
+    switch(req.body.response) {
+        case "agree":
+            instanceBCMS.send("FSC_agrees_about_fire_truck_route");
+            res.send().status(200);
+            break;
+        case "disagree":
+            instanceBCMS.send("FSC_disagrees_about_fire_truck_route");
+            res.send().status(200);
+            break;
+        default:
+            res.send("No response provided").status(200);
+            break;
+    }    
+});
+
+FSC.post('/response_route_police_vehicle', (req, res) => {
+    switch(req.body.response) {
+        case "agree":
+            instanceBCMS.send("FSC_agrees_about_police_vehicle_route");
+            res.send().status(200);
+            break;
+        case "disagree":
+            instanceBCMS.send("FSC_disagrees_about_police_vehicle_route");
+            res.send().status(200);
+            break;
+        default:
+            res.send("No response provided").status(200);
+            break;
+    }    
 });
