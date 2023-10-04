@@ -1,11 +1,12 @@
+#!/bin/sh
 # Exemples de commandes
-curl --json '{"type":"connection"}' -H "Content-Type: application/json" -X POST http://localhost:3000/PSC/connexion
-curl --json '{"type":"connection"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/connexion
-curl --json '{"number":4}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/set_firetruck_number
-curl --json '{"number":6}' -H "Content-Type: application/json" -X POST http://localhost:3000/PSC/set_vehicle_number
-curl --json '{"route":"Route 66"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/set_route_firetruck
-curl --json '{"route":"Route 50"}' -H "Content-Type: application/json" -X POST http://localhost:3000/PSC/set_route_vehicle
+curl -d '{"type":"connection"}' -H "Content-Type: application/json" -X POST http://localhost:3000/PSC/connexion
+curl -d '{"type":"connection"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/connexion
+curl -d '{"number":4}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/set_firetruck_number
+curl -d '{"number":6}' -H "Content-Type: application/json" -X POST http://localhost:3000/PSC/set_vehicle_number
+curl -d '{"route":"Route 66"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/set_route_firetruck
+curl -d '{"route":"Route 50"}' -H "Content-Type: application/json" -X POST http://localhost:3000/PSC/set_route_vehicle
 curl -X GET http://localhost:3000/PSC/get_route_fire_truck
 curl -X GET http://localhost:3000/FSC/get_route_police_vehicle
-curl --json '{"response":"agree"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/response_route_fire_truck
-curl --json '{"response":"agree"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/response_route_police_vehicle
+curl -d '{"response":"agree"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/response_route_fire_truck
+curl -d '{"response":"agree"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/response_route_police_vehicle

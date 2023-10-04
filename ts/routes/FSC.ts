@@ -77,3 +77,7 @@ FSC.post('/response_route_police_vehicle', (req, res) => {
             break;
     }    
 });
+
+FSC.post('/onDone', (req, res) => {
+    instanceBCMS.send("onDone");
+});

@@ -118,12 +118,8 @@ const bcmsStateMachine = createMachine<Context>({
                   on: {
                     FSC_disagrees_about_fire_truck_route:
                       "Route_for_fire_trucks_to_be_proposed",
-                    FSC_agrees_about_fire_truck_route: [
-                      {
-                        target: "Route_for_fire_trucks_approved",
-                        cond: "BCMS.not_in_Route_for_police_vehicles_approved",
-                      },
-                    ],
+                    FSC_agrees_about_fire_truck_route: 
+                      "Route_for_fire_trucks_approved",
                   },
                 },
                 Route_for_fire_trucks_approved: {
@@ -151,12 +147,8 @@ const bcmsStateMachine = createMachine<Context>({
                   on: {
                     FSC_disagrees_about_police_vehicle_route:
                       "Route_for_police_vehicles_to_be_proposed",
-                    FSC_agrees_about_police_vehicle_route: [
-                      {
-                        target: "Route_for_police_vehicles_approved",
-                        cond: "BCMS.not_in_Route_for_fire_trucks_approved",
-                      },
-                    ],
+                    FSC_agrees_about_police_vehicle_route: 
+                      "Route_for_police_vehicles_approved",
                   },
                 },
 
