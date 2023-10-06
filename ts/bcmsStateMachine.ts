@@ -1,17 +1,19 @@
 import { createMachine, assign, interpret } from "xstate";
-import { raise } from "xstate/lib/actions";
+import { factory } from "./databaseConnection";
+import Crisis from "./entities/Crisis";
 
 interface Context {
   FSC_credentials: String;
   PSC_credentials: String;
-  number_of_fire_truck_required: Number;
-  number_of_police_vehicle_required: Number;
+  number_of_fire_truck_required: number;
+  number_of_police_vehicle_required: number;
   route_police_vehicle_proposal: String;
   route_fire_truck_proposal: String;
   fire_trucks_dispatched: number;
   police_vehicle_dispatched: number;
   fire_trucks_arrived: number;
   police_vehicle_arrived: number;
+  Crisis: Crisis;
 }
 
 const bcmsStateMachine = createMachine<Context>({
@@ -29,7 +31,8 @@ const bcmsStateMachine = createMachine<Context>({
     fire_trucks_dispatched: 0,
     police_vehicle_dispatched: 0,
     fire_trucks_arrived: 0,
-    police_vehicle_arrived: 0
+    police_vehicle_arrived: 0,
+    Crisis: new Crisis,
   },
   schema: {
     events: {} as
@@ -40,7 +43,6 @@ const bcmsStateMachine = createMachine<Context>({
     | { type: "Number_of_police_vehicle_defined"; data: { number_of_police_vehicle_required: number }}
     | { type: "Route_for_fire_trucks_fixed"; data: { route_fire_truck_proposal: String }}
     | { type: "Route_for_police_vehicle_fixed"; data: { route_police_vehicle_proposal: String }}
-    // Terminer cette partie ...
   },
   states: {
     init: {
@@ -84,6 +86,14 @@ const bcmsStateMachine = createMachine<Context>({
     },
 
     Number_of_fire_truck_defined: {
+      entry: (context) => {
+        
+        context.Crisis.fire_truck_number = context.number_of_fire_truck_required;
+        context.Crisis.police_vehicle_number = context.number_of_police_vehicle_required;
+        console.log(context.Crisis);
+        let daoCrisis = factory.getCrisisDAO();
+        daoCrisis.create(context.Crisis);
+      },
       on: {
         state_police_vehicle_number: "Step_3_Coordination",
       },

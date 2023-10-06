@@ -41,7 +41,7 @@ FSC.post('/connexion', (req, res) => {
 
 FSC.post('/set_firetruck_number', (req, res) => {
     console.log("Number of firetruck is: " + req.body.number);
-    instanceBCMS.send("state_fire_truck_number", { name_of_route_for_fire_trucks: req.body.number });
+    instanceBCMS.send("state_fire_truck_number", { number_of_fire_truck_required: req.body.number });
     res.send().status(200);
 });
 
