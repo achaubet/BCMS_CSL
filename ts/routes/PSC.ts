@@ -43,3 +43,18 @@ PSC.post('/set_route_vehicle', (req, res) => {
     instanceBCMS.send('route_for_police_vehicles', { route_police_vehicle_proposal: req.body.route });
     res.send().status(200);
 });
+
+PSC.post('/dispatch_police_vehicle', (req, res) => {
+    instanceBCMS.send('police_vehicle_dispatched');
+    res.send().status(200);
+});
+
+PSC.post('/enough_police_vehicles_dispatched', (req, res) => {
+    instanceBCMS.send('enough_police_vehicles_dispatched');
+    res.send().status(200);
+});
+
+PSC.post('/enough_police_vehicles_arrived', (req, res) => {
+    instanceBCMS.send('enough_police_vehicles_arrived');
+    res.send().status(200);
+});

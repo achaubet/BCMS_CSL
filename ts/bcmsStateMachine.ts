@@ -1,4 +1,5 @@
 import { createMachine, assign, interpret } from "xstate";
+import { raise } from "xstate/lib/actions";
 
 interface Context {
   FSC_credentials: String;
@@ -7,10 +8,10 @@ interface Context {
   number_of_police_vehicle_required: Number;
   route_police_vehicle_proposal: String;
   route_fire_truck_proposal: String;
-  fire_trucks_dispatched: string[];
-  police_vehicle_dispatched: string[];
-  fire_trucks_arrived: string[];
-  police_vehicle_arrived: string[];
+  fire_trucks_dispatched: number;
+  police_vehicle_dispatched: number;
+  fire_trucks_arrived: number;
+  police_vehicle_arrived: number;
 }
 
 const bcmsStateMachine = createMachine<Context>({
@@ -25,10 +26,10 @@ const bcmsStateMachine = createMachine<Context>({
     number_of_police_vehicle_required: 0,
     route_police_vehicle_proposal: "",
     route_fire_truck_proposal: "",
-    fire_trucks_dispatched: [],
-    police_vehicle_dispatched: [],
-    fire_trucks_arrived: [],
-    police_vehicle_arrived: []
+    fire_trucks_dispatched: 0,
+    police_vehicle_dispatched: 0,
+    fire_trucks_arrived: 0,
+    police_vehicle_arrived: 0
   },
   schema: {
     events: {} as
@@ -118,8 +119,11 @@ const bcmsStateMachine = createMachine<Context>({
                   on: {
                     FSC_disagrees_about_fire_truck_route:
                       "Route_for_fire_trucks_to_be_proposed",
-                    FSC_agrees_about_fire_truck_route: 
-                      "Route_for_fire_trucks_approved",
+                    FSC_agrees_about_fire_truck_route: [
+                      {
+                        target: "Route_for_fire_trucks_approved",
+                      },
+                    ],
                   },
                 },
                 Route_for_fire_trucks_approved: {
@@ -147,8 +151,11 @@ const bcmsStateMachine = createMachine<Context>({
                   on: {
                     FSC_disagrees_about_police_vehicle_route:
                       "Route_for_police_vehicles_to_be_proposed",
-                    FSC_agrees_about_police_vehicle_route: 
-                      "Route_for_police_vehicles_approved",
+                    FSC_agrees_about_police_vehicle_route: [
+                      {
+                        target: "Route_for_police_vehicles_approved",
+                      },
+                    ],
                   },
                 },
 
@@ -160,10 +167,10 @@ const bcmsStateMachine = createMachine<Context>({
               initial: "Route_for_police_vehicles_to_be_proposed",
             },
           },
+          onDone: {
+            target: "#BCMS.Step_4_Dispatching",
+          },
         },
-      },
-      onDone: {
-        target: "Step_4_Dispatching",
       },
     },
 
@@ -171,7 +178,12 @@ const bcmsStateMachine = createMachine<Context>({
       on: {
         fire_truck_dispatched: {
           target: "Step_4_Dispatching",
-          cond: "areEnoughFireTrucksDispatched",
+          actions: assign({
+            fire_trucks_dispatched: (context, event) => {
+              return context.fire_trucks_dispatched++;
+            }
+          }),
+          cond: 'areEnoughFireTrucksDispatched',
         },
         enough_fire_trucks_dispatched: {
           target: "All_fire_trucks_dispatched",
@@ -218,7 +230,6 @@ const bcmsStateMachine = createMachine<Context>({
               on: {
                 enough_fire_trucks_arrived: [
                   {
-                    cond: "BCMS.no_more_dispatched_fire_trucks_and_not_in_All_police_vehicles_arrived",
                     target: "All_fire_trucks_arrived",
                   },
                 ],
@@ -239,7 +250,6 @@ const bcmsStateMachine = createMachine<Context>({
               on: {
                 enough_police_vehicles_arrived: [
                   {
-                    cond: "BCMS.no_more_dispatched_police_vehicles_and_not_in_All_fire_trucks_arrived",
                     target: "All_police_vehicles_arrived",
                   },
                 ],
@@ -270,6 +280,7 @@ const bcmsStateMachine = createMachine<Context>({
     },
 
     Completion_of_objectives: {
+      entry: () => instanceBCMS.send('close'),
       on: {
         close: "End_of_crisis",
       },
@@ -278,11 +289,28 @@ const bcmsStateMachine = createMachine<Context>({
     End_of_crisis: {
       type: "final",
     },
+
   },
-});
+},
+{
+  guards: {
+    areEnoughFireTrucksDispatched: (context) => {
+      return context.number_of_fire_truck_required == context.fire_trucks_dispatched;
+    },
+    areEnoughPoliceVehiclesDispatched: (context) => {
+      return context.number_of_police_vehicle_required == context.police_vehicle_dispatched;
+    }
+  },
+}
+);
 
 export const instanceBCMS = interpret(bcmsStateMachine).onTransition((state) => {
   console.log(state.value);
   // console.log("Actual NB of firetruck required: " + state.context.number_of_fire_truck_required);
+  // console.log("Dispatched: " + state.context.fire_trucks_dispatched);
+}).onDone(() => {
+  console.log("Fin de la crise");
 });
 instanceBCMS.start();
+
+

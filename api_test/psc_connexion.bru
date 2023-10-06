@@ -1,0 +1,15 @@
+meta {
+  name: psc_connexion
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/PSC/connexion
+  body: json
+  auth: none
+}
+
+body:json {
+  {"type":"connection"}
+}

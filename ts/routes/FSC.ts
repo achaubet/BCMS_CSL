@@ -29,6 +29,10 @@ FSC.get('/get_route_police_vehicle', (res, req) => {
     req.send(instanceBCMS.getSnapshot().context.route_police_vehicle_proposal).status(200);
 });
 
+FSC.get('/next_state', (res, req) => {
+    console.info(instanceBCMS.nextState);
+});
+
 FSC.post('/connexion', (req, res) => {
     console.log("Fireman connected!");
     instanceBCMS.send("FSC_connection_request");
@@ -78,6 +82,17 @@ FSC.post('/response_route_police_vehicle', (req, res) => {
     }    
 });
 
-FSC.post('/onDone', (req, res) => {
-    instanceBCMS.send("onDone");
+FSC.post('/dispatch_fire_truck', (req, res) => {
+    instanceBCMS.send('fire_truck_dispatched', {fire_trucks_dispatched: 1});
+    res.send().status(200);
+});
+
+FSC.post('/enough_fire_trucks_dispatched', (req, res) => {
+    instanceBCMS.send('enough_fire_trucks_dispatched');
+    res.send().status(200);
+});
+
+FSC.post('/enough_fire_trucks_arrived', (req, res) => {
+    instanceBCMS.send('enough_fire_trucks_arrived');
+    res.send().status(200);
 });
