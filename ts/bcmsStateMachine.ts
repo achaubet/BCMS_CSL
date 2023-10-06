@@ -17,10 +17,12 @@ interface Context {
 }
 
 const bcmsStateMachine = createMachine<Context>({
-  /** @xstate-layout N4IgpgJg5mDOIC5QCEDCBZAygOgJYDtcAXAYgDFNUB9AYwHt98wajcGqAnMARwFc4iAbQAMAXUSgADnVjE2+CSAAeiAIwAmAMzYA7AFZ1e1Zp0A2Tap2W9AGhABPRAA5hq7ABYAnHs+nVe-ScAzwBfELs0LDxCUgAFSloGJhZ5Th5+WCExRWlZVgZFFQRjT2w9J1NPbxdhdxcAu0cETx1hbHUnExdVJ38jTTCIjBwKanpGZiJIEnixpMnUrj4BEXEkEFy5AvWinU11bEr3K3d3C39VU0bnVw9vX39A8sGQSJxZxImWadHP5Pz8GllplVjkZFsFDtEDpWmUnOphMJ4adKk53NdmrCOl1XL09EZ3C83thUBxcLJYFQIGAiABDXAAG0pYCUNAAFrT8DASJlaVMqAAzXBcKhEDi8GgAayo+F4AFsAEZgDig9abAGFRDqdzCHTtYQGTRo9Ta1SXDGmPRtcq6zyXHQdIKE8KvYYkskUqk0+lMqgs9mc7m8-nSBm4GhgKgANzAbPDDMjssVytVUnBGqhCC0pgOiL0+18OjOtXRDkQ7iMcINe08WlUviJboAcvKlRwqHQBYLhZGxRLpdShUwIDy6SG6GGI9HY-HE62U9k1en5JqEABaIvtHMOu2BTyaY4Ynp7MomdQaeEuE2mRtRFvJ9udqih8ORmNxmgJr1D6bByNCkU+ylGV5xVRc0zyFdMzPbBhBNfRLkuTRND0S0jzqNp1B0CoK1MUwKlcPRbxwTApkkKhNCoVA6DoDgIAIPl5BICAGDAbA-2wYlSLAcjKOo2j6PwRiGFTDZl22UAig6BFsDRVQkQdbU0SuMtinKNxWg6OozTMSwBhdLiyIoqiaLohiAWwbjJEpZDaVUCjNFpdQqCbMAoDoVhhPwbAACU6F4fkBVo7tAPFKVKWpGMGToSQ5TAfAiF8-zAuCgDezCyVKSIOgqCVZ8OBimRpgKgL-1SntRQy2BRPVKDJLUYQTDKO1dRMM5NHMTQj3xUoTUNPFWncYxiMsoy+NMwSvNGnibMc+zbOc1z3M8iy-NKwVytC-sIrAKKYrihKkvWoL2zSyrtu7JQfgSejYFpKAuDgKhaQVZKQvS-tOGSsAavEyF6uKRq9R8eS9iLZDOu64RSl6HNDB0Tx3A6aGRqs4z+LMoSLKs2a7IcpyXLcjzcCmtaUtOiqgMyr09ti+LErJsqKa28LLuu6h7seykXres6qa+0rfsgiTlDUHMnFkobHQrXVTDqbrLFkqpUNMRF2qw1GxpMgTzPkabrPx+bHMWomVr1xmNvbF8p3fWcdtpg6Ge+y3nwnV9pw-BMspyvLJAK3Jiudk7XcnN8Z0-OAhYhVd5N6MoDEqVCrHUFoj33bRVbljpUPUS0dE1nj0Ym3WGH13GjYJpbidJoPgutsPPaeyKwGiunDot4P649u22ZHX5bs5sAnp5gKQ-d22I4FqYo4zAHY9MbAWjwtEHVBo94QXg8NGMfFz0MAveO1zGppxw38ZN5aSdW2urbdm3w69mmW-2+mjvJsf78bykhSuvuEkH4er1R5dwnl+Eq09wJiWFv9UWxQizuA8EjUwexjBogMOvA8HhtT4hMDmSw+cDJujRu4KgAARckkg+TsgIFAEgfMMpUgoVQtkkAZ51VgWueSBxtKtFXqcdweEVJNG1PhWC+ZBFOCdH4G8hCojELIUwog1CuQkHiv5KAbJ3rnVZrdShSiWEQDYSLIodRtCaBaHsCoKcNAIlsKpbUXhsBnktEYIw8JdQHyoCQ8hsA9HKNoSAh+kZdHMNYZA2qxjEBri3rJXUSIjSaGhoWIRWotKyQMLWAR2JaieO8Yo-xqj8DqM0YEr+jDfGhMMeEv6q5kJtHkkidOZp-B4QxPBbQPQdR1BQT4fSQwogAEEGQMi0VTCK+SDEkFKbOcpfiDFGJgUUO0bg5atERvsRElour2KTk41o8kBGdA6rnEaQyRn0IuiE-R0w1G8A0R-BuPcrnsjCWsCC0dMwaCPOoU5wyHndwjuMip1yRwXOAs8+Z1ToEx2hhLWF+5XB+APOUNp-hSj6DMAIuCudElEVkTgM5-zQFNwmTcopdzNFguphC15YJoWZgRAvBCRZeinBhJnI8F5F61DMFUII+EnAEP6SRIyegqADI4GSKMtIGTMVYuxMcbFDKFzFRKqVMqFkxwMHoXQclaiMpTkjDE+wJbGBTmefEtQNBCtdHI0V4rJW4GlbKqluUuC0klCxAA7vgTVmYrASxNPuXprgWi5wxDCMR-LjmI3kqEfF+sqCqsdc6qZd9HmTwVO6z1dAfV+rnsIS0uhWjmLZQ6M4pYmiRoNEEU0WErQEk8cm9VLrKYMIVNFKUtKlz0rnvhNwng1bnh5SadQGIDBwoRAjA8JhPBOibQ6ltabQ4Aq-B2ugXaqlvKgR8vtDpZKqzOLWJemyLQGjET4K0MIYQHmdMKxNzanUypIDQD05IqDvrlLRSMsBdrKh+lC3dsD7QLwrENFCCJXAVgxEjBBgqXCDtxX4KofTbUipVYup9srX3knfe+r2lJf0xi4Pm4D+IJZWhzIh3eU6MRrjlrJSwhbsLHCcN4FOC61VYewGQNtF1aQpplTxvjrMBNSpoYU4poyqrPRTd295s9YGJO0GiaG5gcIoeg6pDqepOiDvLcg2sZo71oYfZh512BYjptXcPQTDJLPWeJdzFNEnbn3OmYC2TUr5M7sU0UZC2gU75jnRWWstRtlNAnbBPC9ZfDIV6BxhN1E5SSATACDsXY6AKgAFYLBjLAF90Vf2kakshNwIj8yWDC-sY1FhdCnD0EjRrJgoMEJdEU6k8B1hvDpUBoo0S2OxNaJ0ToSTkEpPXP4A4FgrDQ3rJUFrqHiQEGIL1vzUS-AXoRvWXCaCx2qTYwvWsAQsLanPHaJwI1fjjH+JANb7CTFmDKHmcxB5dReA6hibodwfB+ACOUYII0Pg3cmHdntfXED4h1bHQtwQrRnYxC0TCnRsK4j6MNJLb6dp0kZMyVkHIuRgHu5ErMGgF6InexB3EaFVLlCO4k440kWiXBGveNsGXpOfUHAQMHCmHtROM7oX7+YzsuH0BNy4tZdAmACNhFCvSZH3rZ8qDnHmvzc+HMTxZAuAjYHrP4Y45jC1ml8OhFw7RsJyxVgRfwnjxo6yxuwiJ2uED4gXsg2oVpBVDQsd844TjLi538BYFHPyE1o3t8fbGZFy7n0JpfLyWvVyHsOINL3RZ6wwiPMhODgf9DmvC-G+9Eej6TWjzNM+C14-V2vsdTaH0dF-tbo7JPmZLQHA9zLb3medDoRNAH8Wg7GuGANHb0vJdvKn1shXC+NfzY30543h2r8O71+0dTbKuVIx+0Kr+iAreAatDaJ39PPus+qQuDqlCOpXFQ4CKoMfGMy96yn3NOPVczal1X8zBv1Km8v3bgXypW-lwF-gP2AxMD1ARlQhRB0m8AVl00awND6ChysEf2Lkd1Llfzxirw-yvnnzrx-3X3tmfjbidkIMX2plpEkB3xjH33B3WyzFOycVal1ARDtBQgVnd1qDGz3nQIdxPhj0r2Nmr0-28m-yJSCRIOb3pnAKKGXkXlgx6DghQkuErTUEsUlmtX7XYOOH4KjxfyEOn3f1NnwK-wXzVybn-zILfiZkkLKU319n9iKnoL5xJysCOyUKvFULlgwTcEFTtCqEajRDnRtWVUPifwnzLmEMrlMJrgoMsOkIAPIPfkSN7jkLUCxXaCOSdFm0RicAwQQVnVi2CK8EFX0OfywKMLf1wLiNr1SMcykKfhkMAISMaLKWoNoN51835yzFLTKFjiwixS0nUOKCOT1xTm1FmyGiGjxWLyMjyWBX8QyOKEHT13rBzywmTjYwiy1BQgXmtUIgNDcRhF+XORE2pVJVcJ6JJxR0YzcXKDCytFGIcVKGcXxAuHcTCLdEJTSJpWuOd1XGGz1xaBwh0n8DglRVhBhGOFC0FQRCCE4zsxWLNDTjcGa16EuCRGCwf3D3tS4ws14xZioORIYN6J8DaQRlgjOBZQPH5URm+LtQwwJKEyJN-2cxbWE2JI5KdRoRRN1GNWQV0H3HGwMDqHFiRM5LZOIK8240JWANlLoP5NQicTFI0BziCHzEFIXma3wi9yCD5SWyIXxLswcxXSc0VJlRWIpNUiPQtwUg+NgO1ElO4ys3NKaLE1dPaJ7k9KjD5LJJJzXlpw6FginTlh6EkTqEuzxOZNNLdPHg9NNN+O9M819O6MBM+TNAljCwERQhrWQXHVzmLSRBsUay8BZySzoBSzS1SCfCy1yxSHyxROvWe0HXiRMDNFcFqzcBKORkRmOzRBGgAFF8AIAOccMKQVj61tBfBBUfBll79jUU5FC2Nmck4AgwgwggA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QCEDCBZAygOgJYDtcAXAYgDFNUB9AYwHt98wajcGqAnMARwFc4iAbQAMAXUSgADnVjE2+CSAAeiAIwAmAMzYA7AFZ1e1Zp0A2Tap2W9AGhABPRAA5hq7ABYAnHs+nVe-ScAzwBfELs0LDxCUgAFSloGJhZ5Th5+WCExRWlZVgZFFQRjT2w9J1NPbxdhdxcAu0cETx1hbHUnExdVJ38jTTCIjBwKanpGZiJIEnixpMnUrj4BEXEkEFy5AvWinU11bEr3K3d3C39VU0bnVw9vX39A8sGQSJxZxImWadHP5Pz8GllplVjkZFsFDtEDpWmUnOphMJ4adKk53NdmrCOl1XL09EZ3C83thMFNJFRNFRUHQ6BwIAQAIYAklk2AUzQM1TshnqKgAOTAUDorCZ8hIEAYYGwmSZUuJpLA5Mp1Np9PwooYLMVbM0HK5up5-MFwtwGvwoPWmwBiiaxk07mwvVM6kMOk87g6wk8diK6ndpg8dX2OncpmEHVOROGWqVVJpdMZzIVkh1eu5vIFQpFzIASnReFMqAAzWnF3BcKhEDi8GgAazZEDAADcwAAbOiSAC2YHwRGweYLYGLpaL5aHVZr9crdCoACMh5IOB2ZNMl4PhxwyxWJ3XYBapODrVDisITGVPKphHsQ7rzJoMX1Si6DJo8a13MYo1FkxS46rE-IMappy6ZGlmpq5vmhYlpuo7btWu5UI2Lbtl2PZ9gO0EjmOlYIVOo5KD8CT0rADJQFwcBUAys5QVu454ZwUFgPuGyHvIhRqKeOjnpe15nJod4PnoXqOpcz5uh6LihOErzRj+yrxmqZpAdy+ochmxrZoBmFDjBdG4ZODbNm2Hbdr2-ZMRu+k7vhuCERA5AJGRFFstRtFwfRk6MYOLFWuxx5iU4jofh0aLCWYdRCZYjpVHophhrUurqDoX44PJf4JuqSasqpoGZiayk6VZ0itrgNBDi2AAWZWtpRyEmWh5lFXpJVlRVYDVTQtVskQM7zlQi7LrAq6WS1dCleVVBVTVcC+Wx2ygEUl69GUBiVHFVh+joD6eLqhzCKYklxeopgBKlMa-iqmXKcmwFqYa+VaZqzWlq1k3TV1dXGahZkYaNr3jW1U0dTNbIEUR1Akc5YCUW5BYDYD70g593lTHNeT+YtnEVNgLTxWiOjqLxD7wgG9oaMY+JE4Y53pVdSnZdquUGhp4GFf9m5ve1nXdUh32mehFnrmNE3c6DZb2Y51DQ7DNHw1zwM80Oa5o9klrzZCWPFCGDqnCdezGGF6gk-aHjqO4+ImM6lgpTJ8pklQ7hUAAIrgsCSEyNDVfgUAkB5Bl1khbse0QXuQOjEIcQgAC0l4HHUlhXkTpyhvFGLm6YQXCHoAn40EoaXLTDtO677ue97vs9vmUCVdZeENsH5fh2rB4YwtyiIEG2CaC0ewVH6GgIrYDiIObXjd4Tp1GEY8JXkXiqOy7jehxXJAKx9tVB2XK-N2sreR8e0fk46V5Iq+mher4ZjpxGjoGJ4GfYrU8-kiXy9ewQlf4NXtfr8jvMkRDmHCAEcjxa11G0S8SJdrnH8GnEeCAXR7GwD0dwtQnAGx8AMO20YACCrZWx10MlvIBlVph-yViQpuICW6sTbprDuzRVBuEOq0d0+xESnXvAgwwphuImFcLUTOt4TrnXwYQ-2NkG7b2ASQKuvAa4I1ForcWgDqGgMxowjQD51BiIIUooGG86rvzIQ5SRDE1E7xoXvOhB8taXk8FnRxu1XB+HtOUdO-hSj6AimGF05hs56MIRQ1RJjpjyMUeY4hljgEaPbkUaOvDDj6H9OGEMJ10QIOYZnbuFsPR1CREEPQL8qB6CoLgjgHBcBNgZK2cUkppREFlNge2C8ykVKqTU1scSGFLQMHoXQaJLwegOn6D0GJ9hBWMH6EwhhhIhVtkMb8Dt2mVOqbUv2OEbJzi4AyWsEoADu5paF+XidCHo7QZlYNcC0E6GIYTYGzkEcwzp3QOJKaszpGyQko1nLs-ZdAjk9KjpeU6uhWg91ODCc29p7ncSeQYBZwkCQfPKWsrpmz4JeVnO2Osu8wT0JBZnNwnhEQemGYTF0GIDBZwRG6e0JhHF6EJDg5ZbS0VfLqT8zeOK6B4usQSuxWi+EHAqIlB+eNOEYjDAM7OPhwowj2JGVlaUVkcvWXUmgVTZBsjdlQTstIhzDRbFwYFAU+EBjyZTBErgLYYnyY6HQUlTzZz8FUbBSzVXso6RqkgWq3Z6r1d1NkxqwCmpORrEF+IgrCVeaeKmdKMTR0OqJVofCCZOG8H6VFPqunYDIFs+uVF0W1PzYW4hDJ0Wfzkd-BRtcomIUrZ0-F6tCXHgvtoNEXpzAVC8LtO1CCBLcU6KSwmoY3RE1UCyz1F1PkauwLERGYtPquRLa2BdS6VEruLZ06tETf6bqMau5tArW1CqKLqbQfoc6OItg-RK1KOiPPiqoKod5ejZpVdgaknZJC1QBFQOgRZAOzgAFYLBbLAP17Zhpmq1loCw7RQw50sPe-YEzEM62ZYYM4rQp2LNklEVA2q9WNiabgVsbIwBKC9gyH2YASAykLPgXgnZ5wcDg4womTqUGkqvGGXorRtpZNqAcbw2dsQej8P4c6xGA0hqacx1j7Gy1YsDixtjYbGmyiIep5TYbyAafY3zUcTBT37zAYw3ULQUFOE6FC8M+GMTeDcEOzQ09pmGGkjOuTOqqBMaHEZgzEomDaamC06Mvm9UBaoEFjjEa23gNfW4CdfgXTun6Doq8KC0HuvWqh2TJGFM6bixu5RRjYv6Y4GFhch7-6BaqzMOLJmCAtos5o30GCgp7AHvFAw+gDrOdfeChlZgugWGKS8b+jZ4DrDeIKyzCTXylBcK0TonRL4WqTf4A4FghMYJQ7Fc6BBiALY64gZNbg5VulfRbTOFtjYIMzQGB+ARkrmyJheJw51fjjH+JAM7ZyEDHADMJbOPd7RXi8AJDE3Q7g+D8AEcowRzofD+5MAHZ7FuIHxAM5aB1gjCQ+85rEnQnW4j6J+L9UWjLkco1QajtH6OA96aPDQAZERQ-cwiHop1qU4xcccDoW1C5frpopAC7dTms4QPiAMfDajCQwR+XuOjjjd0uBYXaLoCm6LFw7BS-4sqAVuszdSYECqWel1HMMDoFcWyRCGV9MIHy6gdE6c22ddpE5KYb66jMUxm4eppCC2kOa6anPVH66EWc24MMkxXjuVcu6yR6XblwM+9pfN9-XC8-cMxNzlA091WaW7D8LbCanI-80an9CvsFy2IV6nOBcS5ciY-a0D1obR7dK6d6rrJ09u7Muzn0XHVhfcZQL5qU3xe8oh-ZvXiPRkUICyauHhttl7Kx4CiYbibo4oomYQfqKw6R-T1xwEVQk-6aS-wCpOfLMLdPXvy9BvVeV8NV+kLLC7-PKNskEGhbAgB33g3e27ivAvkJi9Epiinl1qE22phvwl2NxnyLzTCf0elD2enD25S+lX1r1AMYXxlxnyR6HDHc0uEyVtD7mCmYS8GdC0EzmQKNxunQJAkwIX0giXzwM-2j3Xx4LqyVh6j6lbyGg71sWxwQCsBezIJcC0CMEOhNjcAwQvCqFPDREcQI1aVjFv1QPv1nwwPNywMX1-wMSRmEL5gIO-zf3MOXV5nBhAKx3O2KFDDaGxFfGZSsC9EiiyXswnjUNJVfC8AwRYP90LyZkf2MK4PLzMN4KsK-0FlsPiIZEAKXGAKIN9EhTKGWmSjcIjGoLUE6G0A0AfmOGGSnRk1z1fiXhkQrkyLUFJRQVfTd2Sk2kzW4SaAUIDA0Dw2RRnhhCCWXyoSsQaIQDJ1EhnnKHvXmXTlOFKFmSnguFnm0LwX0XiJiVMTGLW14ydUOmP38HDE8VhBhGODvQwQRCCBzTXTGOYR2jcGZVzjTwsBMEsGuM5VU3-ynCbQ1TGJ8HTjdEeTOFOkzgUJOlMHePnQLQ-x3ShMb2+KrR9luKvAmT4V0F2gtURX7hzxnR-DnTzWhK+OPXnXEWGJ+IyOcKB0vDimH3Ng0GOiKU6MQFzjKGBKCEKR8EcQ9UIy9XJHxNLUXXK3q2JK6T+O9AQTOCfDW1fVOg-HDD11xLVVzQFKEPFnJJVKFMsPJM-mROEyaBpUeTpX2LszRDs0hLzUFMMWFNhLzVJJSPRQkOtwCmYSCnvVDHcyeT4UfQDBhCREHmZS8FFx8zoF-X-VSCAxA3AxSEg1uMVTKC9ERGKKsEvFUAwzcFfVJU9HdFezRHOgAFF8AIBANgN-UdUxjkoc5cZM4UkLxHhUzB0-RSDM0Wg4EfFCt5N-NFMGtNMOByybxBkfFDo71X1h4mgX1ckRzijM0nd2y-MYtStLSLCZpKsey+yLwByAghyfARz7l1chks1kp+5JsfMitOySsqtPiA5awVz2MxiIEBkIUMSNAe54omTpDyhu53NOgBMrYehZzosuybytNFz7DuyVMYs8CgLezKSZdsRvEDsIphzvBYdTZyZfA8ZzYgj-zislMeyysrTKFSs+Qqtiy7Ct1N5GxTNHTI1jwOgjBmjXAnU0QLBiiHwEDDSjAQwudEzsKzzcKVNCSryoKasI8oK7yTAHQXj9gcRhcrgntThHQvyDpjg1DeheL5yLzBLtkiKSKIzN8WszNxLKzHyBJnzfBzA2LQwcsfC+FNoBMwgwggA */
   id: "BCMS",
+
   initial: "init",
   predictableActionArguments: true,
+
   context: {
     FSC_credentials: "",
     PSC_credentials: "",
@@ -34,6 +36,7 @@ const bcmsStateMachine = createMachine<Context>({
     police_vehicle_arrived: 0,
     Crisis: new Crisis,
   },
+
   schema: {
     events: {} as
     | { type: "FSC_connection_request" }
@@ -44,6 +47,7 @@ const bcmsStateMachine = createMachine<Context>({
     | { type: "Route_for_fire_trucks_fixed"; data: { route_fire_truck_proposal: String }}
     | { type: "Route_for_police_vehicle_fixed"; data: { route_police_vehicle_proposal: String }}
   },
+
   states: {
     init: {
       on: {
@@ -66,43 +70,8 @@ const bcmsStateMachine = createMachine<Context>({
 
     Crisis_details_exchange: {
       on: {
-        state_fire_truck_number: {
-          target: "Number_of_fire_truck_defined",
-          actions: assign({
-            number_of_fire_truck_required: (context, event) => {
-              return event.number_of_fire_truck_required;
-            },
-          }),
-        },
-        state_police_vehicle_number: {
-          target: "Number_of_police_vehicle_defined",
-          actions: assign({
-            number_of_police_vehicle_required: (context, event) => {
-              return event.number_of_police_vehicle_required;
-            }
-          }),
-        },
-      },
-    },
-
-    Number_of_fire_truck_defined: {
-      entry: (context) => {
-        
-        context.Crisis.fire_truck_number = context.number_of_fire_truck_required;
-        context.Crisis.police_vehicle_number = context.number_of_police_vehicle_required;
-        console.log(context.Crisis);
-        let daoCrisis = factory.getCrisisDAO();
-        daoCrisis.create(context.Crisis);
-      },
-      on: {
-        state_police_vehicle_number: "Step_3_Coordination",
-      },
-    },
-
-    Number_of_police_vehicle_defined: {
-      on: {
-        state_fire_truck_number: "Step_3_Coordination",
-      },
+        state_number: "Crisis_state_number"
+      }
     },
 
     Step_3_Coordination: {
@@ -300,7 +269,46 @@ const bcmsStateMachine = createMachine<Context>({
       type: "final",
     },
 
-  },
+    Crisis_state_number: {
+      states: {
+        Police_vehicle_number: {
+          states: {
+            state_police_vehicle_number: {
+              on: {
+                Pnumber_defined: "Number_of_police_vehicle_defined"
+              }
+            },
+
+            Number_of_police_vehicle_defined: {
+              type: "final"
+            }
+          },
+
+          initial: "state_police_vehicle_number"
+        },
+
+        Fire_truck_number: {
+          states: {
+            state_fire_truck_number: {
+              on: {
+                Fnumber_defined: "Number_of_fire_truck_defined"
+              }
+            },
+
+            Number_of_fire_truck_defined: {
+              type: "final"
+            }
+          },
+
+          initial: "state_fire_truck_number"
+        }
+      },
+
+      type: "parallel",
+
+      onDone: "Step_3_Coordination"
+    }
+  }
 },
 {
   guards: {
