@@ -7,8 +7,8 @@ export default class routeDAO {
     constructor(dataSource: DataSource) {
         this.RouteRepo = dataSource.getRepository(Route);
     }
-    public async create(Route: Route): Promise<InsertResult> {
-        return await this.RouteRepo.insert(Route);
+    public async create(Route: Route): Promise<Route> {
+        return await this.RouteRepo.save(Route);
     }
     public async findOne(name: string): Promise<Route> {
         return await this.RouteRepo.findOneBy({

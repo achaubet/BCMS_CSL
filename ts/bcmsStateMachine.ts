@@ -1,19 +1,26 @@
 import { createMachine, assign, interpret } from "xstate";
 import { factory } from "./databaseConnection";
 import Crisis from "./entities/Crisis";
+import Route from "./entities/Route";
+import fireTruckInCrisis from "./entities/fireTruckInCrisis";
+import policeVehicleInCrisis from "./entities/policeVehicleInCrisis";
 
 interface Context {
   FSC_credentials: String;
   PSC_credentials: String;
   number_of_fire_truck_required: number;
   number_of_police_vehicle_required: number;
-  route_police_vehicle_proposal: String;
-  route_fire_truck_proposal: String;
+  route_police_vehicle_proposal: string;
+  route_fire_truck_proposal: string;
   fire_trucks_dispatched: number;
   police_vehicle_dispatched: number;
   fire_trucks_arrived: number;
   police_vehicle_arrived: number;
   Crisis: Crisis;
+  routePolice: Route;
+  routeFireman: Route;
+  firetruckCrisis: fireTruckInCrisis[];
+  policeVehicleCrisis: policeVehicleInCrisis[];
 }
 
 const bcmsStateMachine = createMachine<Context>({
@@ -34,7 +41,11 @@ const bcmsStateMachine = createMachine<Context>({
     police_vehicle_dispatched: 0,
     fire_trucks_arrived: 0,
     police_vehicle_arrived: 0,
-    Crisis: new Crisis,
+    Crisis: new Crisis(),
+    routePolice: new Route(),
+    routeFireman: new Route(),
+    firetruckCrisis: [],
+    policeVehicleCrisis: [],
   },
 
   schema: {
@@ -44,8 +55,8 @@ const bcmsStateMachine = createMachine<Context>({
     | { type: "Crisis_details_exchange" }
     | { type: "Number_of_fire_truck_defined"; data: { number_of_fire_truck_required: number } }
     | { type: "Number_of_police_vehicle_defined"; data: { number_of_police_vehicle_required: number }}
-    | { type: "Route_for_fire_trucks_fixed"; data: { route_fire_truck_proposal: String }}
-    | { type: "Route_for_police_vehicle_fixed"; data: { route_police_vehicle_proposal: String }}
+    | { type: "Route_for_fire_trucks_fixed"; data: { route_fire_truck_proposal: string }}
+    | { type: "Route_for_police_vehicle_fixed"; data: { route_police_vehicle_proposal: string }}
   },
 
   states: {
@@ -69,12 +80,74 @@ const bcmsStateMachine = createMachine<Context>({
     },
 
     Crisis_details_exchange: {
+      entry: () => instanceBCMS.send('state_number'),
       on: {
         state_number: "Crisis_state_number"
       }
     },
 
+    Crisis_state_number: {
+      states: {
+        Police_vehicle_number: {
+          states: {
+            state_police_vehicle_number: {
+              on: {
+                set_police_vehicle_number: {
+                  target: "Number_of_police_vehicle_defined",
+                  actions: assign({
+                    number_of_police_vehicle_required: (context, event) => {
+                      context.Crisis.police_vehicle_number =  event.number_of_police_vehicle_required;
+                      return event.number_of_police_vehicle_required;
+                    }
+                  }),
+                },
+              }
+            },
+
+            Number_of_police_vehicle_defined: {
+              type: "final"
+            }
+          },
+
+          initial: "state_police_vehicle_number"
+        },
+
+        Fire_truck_number: {
+          states: {
+            state_fire_truck_number: {
+              on: {
+                set_fire_truck_number: {
+                  target: "Number_of_fire_truck_defined",
+                  actions: assign({
+                    number_of_fire_truck_required: (context, event) => {
+                      context.Crisis.fire_truck_number = event.number_of_fire_truck_required;
+                      return event.number_of_fire_truck_required;
+                    },
+                  }),
+                },
+              }
+            },
+
+            Number_of_fire_truck_defined: {
+              type: "final"
+            }
+          },
+
+          initial: "state_fire_truck_number"
+        }
+      },
+
+      type: "parallel",
+
+      onDone: "Step_3_Coordination"
+    },
+
     Step_3_Coordination: {
+      entry: async (context) => {
+        let daoCrisis = factory.getCrisisDAO();
+        context.Crisis = await daoCrisis.create(context.Crisis);
+        console.info(context.Crisis);
+      },
       type: "parallel",
       states: {
         Steps_33a1_33a2_Negotiation: {
@@ -106,6 +179,11 @@ const bcmsStateMachine = createMachine<Context>({
                   },
                 },
                 Route_for_fire_trucks_approved: {
+                  entry: (context) => {
+                    context.routeFireman.route_name = context.route_fire_truck_proposal;
+                    let routeDAO = factory.getRouteDAO();
+                    routeDAO.create(context.routeFireman);
+                  },
                   type: "final",
                 },
               },
@@ -139,6 +217,11 @@ const bcmsStateMachine = createMachine<Context>({
                 },
 
                 Route_for_police_vehicles_approved: {
+                  entry: (context) => {
+                    context.routePolice.route_name = context.route_police_vehicle_proposal;
+                    let routeDAO = factory.getRouteDAO();
+                    routeDAO.create(context.routePolice);
+                  },
                   type: "final",
                 },
               },
@@ -154,6 +237,28 @@ const bcmsStateMachine = createMachine<Context>({
     },
 
     Step_4_Dispatching: {
+      entry: async (context) => {
+        let fireTruckDAO = factory.getFireTruckDAO();
+        let policeVehicleDAO = factory.getPoliceVehicleDAO();
+        for(let i = 0; i < context.number_of_fire_truck_required; i++) {
+          let firetruck = await fireTruckDAO.findOne("Fire truck #" + (i + 1));
+          let firetruckCrisis = new fireTruckInCrisis();
+          firetruckCrisis.crisis_id = context.Crisis.crisis_id;
+          firetruckCrisis.fire_truck_name = firetruck.fire_truck_name;
+          firetruckCrisis.route_name = context.routeFireman.route_name;
+          firetruckCrisis.fire_truck_status = "Dispatched";
+          await factory.getFireTruckInCrisisDAO().create(firetruckCrisis);
+        }
+        for(let i = 0; i < context.number_of_police_vehicle_required; i++) {
+          let policevehicle = await policeVehicleDAO.findOne("Police Vehicle #" + (i + 1));
+          let policevehicleCrisis = new policeVehicleInCrisis();
+          policevehicleCrisis.crisis_id = context.Crisis.crisis_id;
+          policevehicleCrisis.police_vehicle_name = policevehicle.police_vehicle_name;
+          policevehicleCrisis.route_name = context.routePolice.route_name;
+          policevehicleCrisis.police_vehicle_status = "Dispatched";
+          await factory.getPoliceVehicleInCrisisDAO().create(policevehicleCrisis);
+        }
+      },
       on: {
         fire_truck_dispatched: {
           target: "Step_4_Dispatching",
@@ -268,46 +373,6 @@ const bcmsStateMachine = createMachine<Context>({
     End_of_crisis: {
       type: "final",
     },
-
-    Crisis_state_number: {
-      states: {
-        Police_vehicle_number: {
-          states: {
-            state_police_vehicle_number: {
-              on: {
-                Pnumber_defined: "Number_of_police_vehicle_defined"
-              }
-            },
-
-            Number_of_police_vehicle_defined: {
-              type: "final"
-            }
-          },
-
-          initial: "state_police_vehicle_number"
-        },
-
-        Fire_truck_number: {
-          states: {
-            state_fire_truck_number: {
-              on: {
-                Fnumber_defined: "Number_of_fire_truck_defined"
-              }
-            },
-
-            Number_of_fire_truck_defined: {
-              type: "final"
-            }
-          },
-
-          initial: "state_fire_truck_number"
-        }
-      },
-
-      type: "parallel",
-
-      onDone: "Step_3_Coordination"
-    }
   }
 },
 {

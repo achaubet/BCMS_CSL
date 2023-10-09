@@ -35,7 +35,7 @@ PSC.post('/connexion', (req, res) => {
 
 PSC.post('/set_vehicle_number', (req, res) => {
     console.log("Number of vehicle is: " + req.body.number);
-    instanceBCMS.send("state_police_vehicle_number", { number_of_police_vehicle_required: req.body.number });
+    instanceBCMS.send("set_police_vehicle_number", { number_of_police_vehicle_required: req.body.number });
     res.send().status(200);
 });
 

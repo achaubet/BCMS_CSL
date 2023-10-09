@@ -7,7 +7,7 @@ export default class crisisDAO {
     constructor(dataSource: DataSource) {
         this.crisisRepo = dataSource.getRepository(Crisis);
     }
-    public async create(crisis: Crisis): Promise<InsertResult> {
+    public async create(crisis: Crisis): Promise<Crisis> {
         let max_id = await this.crisisRepo.maximum("crisis_id");
         console.log("Max id is: " + max_id);
         if(max_id == null) {
@@ -16,7 +16,7 @@ export default class crisisDAO {
             crisis.crisis_id = max_id + 1;
         }
         
-        return await this.crisisRepo.insert(crisis);
+        return await this.crisisRepo.save(crisis);
     }
     public async findOne(crisisId: number): Promise<Crisis> {
         return await this.crisisRepo.findOneBy({

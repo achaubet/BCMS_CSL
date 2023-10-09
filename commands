@@ -10,9 +10,16 @@ curl -X GET http://localhost:3000/PSC/get_route_fire_truck
 curl -X GET http://localhost:3000/FSC/get_route_police_vehicle
 curl -d '{"response":"agree"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/response_route_fire_truck
 curl -d '{"response":"agree"}' -H "Content-Type: application/json" -X POST http://localhost:3000/FSC/response_route_police_vehicle
+sleep 2
 curl -X POST http://localhost:3000/FSC/dispatch_fire_truck
 curl -X POST http://localhost:3000/FSC/enough_fire_trucks_dispatched
 curl -X POST http://localhost:3000/PSC/dispatch_police_vehicle
 curl -X POST http://localhost:3000/PSC/enough_police_vehicles_dispatched
 curl -X POST http://localhost:3000/FSC/enough_fire_trucks_arrived
 curl -X POST http://localhost:3000/PSC/enough_police_vehicles_arrived
+
+# Add police vehicle to the database
+# curl -d '{"name":"Police Vehicle #1"}' -H "Content-Type: application/json" -X POST http://localhost:3000/System/add_police_vehicle
+
+# Add fire truck to the database
+# curl -d '{"name":"Fire truck #1"}' -H "Content-Type: application/json" -X POST http://localhost:3000/System/add_fire_truck
