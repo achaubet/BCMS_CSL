@@ -80,7 +80,12 @@ const bcmsStateMachine = createMachine<Context>({
     },
 
     Crisis_details_exchange: {
-      entry: () => instanceBCMS.send('state_number'),
+      entry: {
+        type: 'xstate.raise', 
+        event: {
+          type: 'state_number'
+        }
+      },
       on: {
         state_number: "Crisis_state_number"
       }
@@ -364,7 +369,12 @@ const bcmsStateMachine = createMachine<Context>({
     },
 
     Completion_of_objectives: {
-      entry: () => instanceBCMS.send('close'),
+      entry: {
+        type: 'xstate.raise', 
+        event: {
+          type: 'close'
+        }
+      },
       on: {
         close: "End_of_crisis",
       },
