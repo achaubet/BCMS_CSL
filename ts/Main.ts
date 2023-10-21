@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { FSC } from "./routes/FSC";
 import { PSC } from "./routes/PSC";
 import { System } from "./routes/System";
@@ -8,6 +9,7 @@ import { System } from "./routes/System";
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 const port = 3000;
 
 // curl -X GET http://localhost:3000/FSC
